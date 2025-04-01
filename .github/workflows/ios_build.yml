@@ -5,8 +5,7 @@ on:
     branches: [ master ]
 
 permissions:
-  contents: read
-  actions: read
+  contents: read  # Needed for actions/checkout
 
 jobs:
   build:
