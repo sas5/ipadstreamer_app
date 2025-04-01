@@ -1,0 +1,38 @@
+name: Build iOS App
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.19.6'
+
+    - name: Install CocoaPods
+      run: sudo gem install cocoapods
+
+    - name: Get packages
+      run: flutter pub get
+
+    - name: Build iOS app
+      run: flutter build ios --release --no-codesign
+
+    - name: Package IPA
+      run: |
+        mkdir -p Payload
+        cp -r build/ios/iphoneos/Runner.app Payload/
+        zip -r ipadstreamer.ipa Payload
+
+    - name: Upload IPA
+      uses: actions/upload-artifact@v3
+      with:
+        name: ipadstreamer.ipa
+        path: ipadstreamer.ipa
